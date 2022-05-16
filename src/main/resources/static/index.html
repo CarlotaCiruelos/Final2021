@@ -10,11 +10,83 @@
 </head>
 <body>
 <div>
-    <h2>Estas son las temperaturas medias para la estación</h2>
+    <h1>Estas son las temperaturas medias para la estación</h1>
 </div>
 <div id="sol"></div>
+<div>
+    <h1>Bookings</h1>
+    <form class="d-flex" id="search-form">
+        <button class="btn btn-outline-success" type="submit" data-bs-toggle="tooltip" data-bs-placement="right" title="Search all users">Ver Reservas</button>
+    </form>
 
+    <table class="table table-striped table-hover" >
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Apartment</th>
+            <th>Pets</th>
+        </tr>
+        </thead>
+        <tbody id="cuerpoTabla">
+
+        </tbody>
+    </table>
+</div>
 
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+<script>
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    const searchForm = document.getElementById("search-form");
+    var results = [];
+
+    const $cuerpoTabla = document.querySelector("#cuerpoTabla");
+
+    searchForm.addEventListener("submit", function(event){
+        event.preventDefault();
+
+
+        fetch(`http://localhost:8080/api/v2/getAll`)
+            .then(res => {
+                console.log("Response here")
+                return res.json()
+            })
+
+            .then(r => {
+                results= r;
+                console.info(r);
+                console.log("Cogemos las reservas");
+                results.forEach(reserva => {
+                    // Crear un <tr>
+                    const $tr = document.createElement("tr");
+                    // Creamos el <td> de nombre y lo adjuntamos a tr
+                    let $tdNombre = document.createElement("td");
+                    $tdNombre.textContent = reserva.email; // el textContent del td es el nombre
+                    $tr.appendChild($tdNombre);
+                    // El td de precio
+                    let $tdApartment = document.createElement("td");
+                    $tdApartment.textContent = reserva.number;
+                    $tr.appendChild($tdApartment);
+                    // El td del código
+                    let $tdCodigo = document.createElement("td");
+                    $tdCodigo.textContent = reserva.pets;
+                    $tr.appendChild($tdCodigo);
+                    // Finalmente agregamos el <tr> al cuerpo de la tabla
+                    $cuerpoTabla.appendChild($tr);
+                    // Y el ciclo se repite hasta que se termina de recorrer todo el arreglo
+                });
+
+            })
+            .catch(e => {
+                console.error("Error " + e)
+            })
+        return false;
+    })
+</script>
 </html>
