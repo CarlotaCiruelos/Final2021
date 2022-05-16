@@ -39,6 +39,7 @@ class SubscriptionControllerTest {
         //then
 
         Assertions.assertEquals(result.getBody().getMessage(), "Ok");
+        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
 
     }
 
